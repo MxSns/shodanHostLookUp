@@ -34,12 +34,19 @@ if args.output:
     print(f"Results saved to {output_file}")
 
 # Print the hostname from the dictionary
-print("Hostname is:\t" + str(hinfd['hostnames']) + "\nIP address is:\t" + str(hinfd['ip_str']) + "\nPorts:\t" + str(hinfd['ports']) + "\nOperating system:\t" + str(hinfd['os']) + "\nLocation\t" + str(hinfd['country_code']) + "8asn:\t" + str(hinfd['asn']) + "\nTags:\t"+ str(hinfd['tags']) + "\nLast update :\t" + str(hinfd['last_update']))
 
-if 'vulns' not in hinfd:
-    print("No vulns found")
-else:
-    print("\nVulnerabilities\t" + str(hinfd['vulns']))
+# Safe printing with defaults for missing keys
+hostname = hinfd.get('hostnames', 'N/A')
+ip_str = hinfd.get('ip_str', 'N/A')
+ports = hinfd.get('ports', 'N/A')
+os = hinfd.get('os', 'N/A')
+country_code = hinfd.get('country_code', 'N/A')
+asn = hinfd.get('asn', 'N/A')
+tags = hinfd.get('tags', 'N/A')
+vulns = hinfd.get('vulns', 'N/A')
+last_update = hinfd.get('last_update', 'N/A')
+
+print(f"Hostname is:\t{hostname}\nIP Address is:\t{ip_str}\nPorts:\t{ports}\nOperating system:\t{os}\nLocation:\t{country_code}\nAsn:\t{asn}\nTags:\t{tags}\nKnown vulns\t{vulns}\nLast update:\t{last_update}")
 
 if (args.format) == 'text':
     print(response.text)
