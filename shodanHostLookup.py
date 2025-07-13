@@ -9,25 +9,22 @@ parser.add_argument('-o', '--output', help='The path for the output file')
 
 args = parser.parse_args()
 
-
 # Variables
 api_key = (args.key)
 
 # Lookup an IP using shodan's REST API
 response = requests.get(f'https://api.shodan.io/shodan/host/{args.host}?key={api_key}')
 
-
 # The response text type is a string, so try to convert to dictionary
-hinfd = json.loads(response.text)
+ipinfo_dict = json.loads(response.text)
 
 # Format the output (indent, sort keys and don't convert Unicode) for printing JSON
-host_info_json = json.dumps(hinfd, indent=4, sort_keys=True, ensure_ascii=False)
+host_info_json = json.dumps(ipinfo_dict, indent=4, sort_keys=True, ensure_ascii=False)
 # print(host_info_json)
 
 # Create the path and dir for the output
 
-if args.output:
-     
+if args.output:     
     output_file = os.path.join(args.output)
     with open(output_file, 'w') as f:
         f.write(host_info_json)
@@ -35,18 +32,16 @@ if args.output:
 
 # Print the hostname from the dictionary
 
-# Safe printing with defaults for missing keys
-hostname = hinfd.get('hostnames', 'N/A')
-ip_str = hinfd.get('ip_str', 'N/A')
-ports = hinfd.get('ports', 'N/A')
-os = hinfd.get('os', 'N/A')
-country_code = hinfd.get('country_code', 'N/A')
-asn = hinfd.get('asn', 'N/A')
-tags = hinfd.get('tags', 'N/A')
-vulns = hinfd.get('vulns', 'N/A')
-last_update = hinfd.get('last_update', 'N/A')
-
-print(f"Hostname is:\t{hostname}\nIP Address is:\t{ip_str}\nPorts:\t{ports}\nOperating system:\t{os}\nLocation:\t{country_code}\nAsn:\t{asn}\nTags:\t{tags}\nKnown vulns\t{vulns}\nLast update:\t{last_update}")
+print ("\nDetailed response:\n")
+for key, value in ipinfo_dict.items():
+    if isinstance(value, list) and key == 'data':
+        print(f"{key}:")
+        for item in value:
+            print(f"\tPort: {item.get('port', 'N/A')}")
+            print(f"\tBanner: {item.get('banner', 'N/A')}")
+            print(f"\tVulns: {item.get('vulns', 'N/A')}")
+    else:
+        print(f"{key}:\t{value}")
 
 if (args.format) == 'text':
     print(response.text)
