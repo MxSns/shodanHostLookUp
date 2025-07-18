@@ -15,12 +15,10 @@ api_key = (args.key)
 # Lookup an IP using shodan's REST API
 response = requests.get(f'https://api.shodan.io/shodan/host/{args.host}?key={api_key}')
 
-# The response text type is a string, so try to convert to dictionary
 ipinfo_dict = json.loads(response.text)
 
-# Format the output (indent, sort keys and don't convert Unicode) for printing JSON
+# Format the output
 host_info_json = json.dumps(ipinfo_dict, indent=4, sort_keys=True, ensure_ascii=False)
-# print(host_info_json)
 
 # Create the path and dir for the output
 
